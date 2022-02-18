@@ -1,6 +1,6 @@
 {
 	"extends": "./tsconfig.json",
-	"include": ["**/*.ts"],
+	"include": ["**/*.ts", "../../libs/weather-forecast/services/src/lib/weather-forecast-api.service.ts"],
 	"compilerOptions": {
 		"types": ["node"]
 	}

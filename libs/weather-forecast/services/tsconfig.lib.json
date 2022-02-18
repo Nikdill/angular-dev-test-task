@@ -10,5 +10,5 @@
 		"lib": ["dom", "es2018"]
 	},
 	"exclude": [],
-	"include": ["**/*.ts"]
+	"include": ["**/*.ts", "../../../apps/weather-forecast/src/app/weather-forecast.service.ts"]
 }

@@ -1,10 +1,12 @@
 import {Injectable} from "@angular/core";
-import {WeatherForecastApiService} from "@bp/weather-forecast/services";
-import {catchError, switchMap, map} from "rxjs/operators";
-import {Observable, of } from "rxjs";
 
-import {GetGeoDataItem} from "./actions/get-geo-data.response";
+import {catchError, switchMap, map } from "rxjs/operators";
+import {Observable, of} from "rxjs";
+
+import { WeatherForecastApiService } from "./weather-forecast-api.service";
+import { GetGeoDataItem } from "./actions/get-geo-data.response";
 import { WeaherItemResponse } from "./actions/get-weather-data.response";
+
 
 @Injectable()
 export class WeatherForecastService {

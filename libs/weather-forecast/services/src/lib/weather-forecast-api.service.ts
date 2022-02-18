@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {GetGeoDataResponse} from "./actions/get-geo-data.response";
-import { GetWeatherDataResponse } from "./actions/get-weather-data.response";
+import { GetGeoDataResponse } from 'libs/weather-forecast/services/src/lib/actions/get-geo-data.response';
+import { GetWeatherDataResponse } from 'libs/weather-forecast/services/src/lib/actions/get-weather-data.response';
 
 type Exclude = 'current' | 'minutely'| 'daily'| 'hourly' |'alerts';
 

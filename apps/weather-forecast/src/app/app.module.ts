@@ -1,17 +1,17 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import {WeatherForecastModule} from "./weather-forecast/weather-forecast.module";
-import { SearchInputComponent } from './weather-forcast/search-input/search-input.component';
 
 @NgModule({
-	declarations: [AppComponent, SearchInputComponent],
+	declarations: [AppComponent],
 	imports: [
 		BrowserModule,
+		HttpClientModule,
 		WeatherForecastModule,
 	],
-	providers: [],
 	bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,16 +1,15 @@
 <div>
 	<label>
-		Search
-		<input (click)="onSearch($event.target.value)" type="text">
+
+		Search 1
+		<input (input)="onSearch($event.target)" type="text">
 	</label>
 
 	<label>
 		Filter
-		<select #selectFilter>
+		<select (change)="onFilterChange($event.target)">
 			<option value="daily">daily</option>
 			<option value="hourly">hourly</option>
 		</select>
 	</label>
 </div>
-
-<router-outlet></router-outlet>
