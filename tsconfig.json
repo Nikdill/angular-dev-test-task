@@ -22,6 +22,7 @@
 		"noEmitHelpers": true,
 		"noLib": false,
 		"strictNullChecks": true,
+		"strictFunctionTypes": true,
 		"sourceMap": true,
 		"inlineSourceMap": false,
 		"declaration": false,
