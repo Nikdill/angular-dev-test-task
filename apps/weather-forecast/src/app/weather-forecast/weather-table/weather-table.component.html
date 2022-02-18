@@ -7,9 +7,11 @@
 
 	<label>
 		Filter
-		<select (change)="onFilterChange($event.target)">
-			<option value="daily">daily</option>
-			<option value="hourly">hourly</option>
+		<select *ngIf="(filterState$ | async) as filterState" (change)="onFilterChange($event.target)">
+			<option value="daily" [selected]="filterState === 'daily'">daily</option>
+			<option value="hourly" [selected]="filterState === 'hourly'">hourly</option>
 		</select>
 	</label>
 </div>
+
+<bp-view-table></bp-view-table>

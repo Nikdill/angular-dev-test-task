@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { WeaherItemResponse } from 'libs/weather-forecast/services/src/lib/actions/get-weather-data.response';
 import { WeatherForecastService } from 'libs/weather-forecast/services/src/lib/weather-forecast.service';
-import { of, ReplaySubject, combineLatest, Observable, BehaviorSubject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, publishReplay, refCount, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, publishReplay, refCount } from 'rxjs/operators';
+import { changeFilterAction, searchTextAction } from '../store/actions/weather-forecast.actions';
+import { StoreService } from '../store/store.service';
 
 
 @Component({
@@ -17,84 +19,47 @@ export class WeatherTableComponent implements AfterViewInit{
 	selectFilter!: ElementRef<HTMLSelectElement>;
 
 
-	searchResult$ = new ReplaySubject<WeaherItemResponse[]>(1);
+	weatherForecastItems$: Observable<WeaherItemResponse[]>;
 
-	searchText$ = new BehaviorSubject('');
+	searchTextState$: Observable<string>;
 
-	filterState$ = new BehaviorSubject('');
+	filterState$: Observable<string>;
 
 	queryParams$: Observable<{ filter: string; search: string }>;
-
-	private readonly searchMethodMap =  new Map([
-		['daily', this.dailySearch.bind(this)],
-		['hourly', this.hourlySearch.bind(this)],
-	])
 
 	constructor(
 		private weatcherService: WeatherForecastService,
 		private activateRouter: ActivatedRoute,
-		private router: Router,
+		private storeService: StoreService,
 		) {
 			this.queryParams$ = this.activateRouter.queryParams.pipe(
 				map(params => ({ filter: params.filter || '', search: params.search || ''})),
 				publishReplay(1),
 				refCount()
 			);
+			this.searchTextState$ = this.storeService.getSearchTextState();
+			this.filterState$ = this.storeService.getFilterState();
+			this.weatherForecastItems$ = this.storeService.getWeatherForecastItems();
+			this.weatherForecastItems$.subscribe(data => {
+				debugger;
+			});
 		}
 
-	ngAfterViewInit(): void {
-		this.queryParams$.subscribe(params => {
-			if(params.filter && params.search) {
-				this.searchMethodMap.get(params.filter)?.(params.search).subscribe(response => this.searchResult$.next(response))
-			}
-		});
-
-		this.searchText$.pipe(
-			filter(Boolean),
-			distinctUntilChanged(),
-			debounceTime(500),
-			switchMap(value => {
-				return combineLatest(
-					[
-						this.filterState$,
-						of(value),
-					]
-				)
-			})
-		).subscribe(([filter, search]) => {
-			this.router.navigate([''], { queryParams: { filter, search } });
-		});
-
-		this.filterState$.pipe(
-			filter(Boolean),
-			distinctUntilChanged(),
-			debounceTime(500),
-			switchMap(value => {
-				return combineLatest(
-					[
-						of(value),
-						this.searchText$,
-					]
-				)
-			})
-		).subscribe(([filter, search]) => {
-			this.router.navigate([''], { queryParams: { filter, search } });
-		});
-	}
+	ngAfterViewInit(): void {}
 
 
 	onSearch(event: EventTarget | null) {
-		const text = event && (event as HTMLInputElement).value;
-		if(text) {
-			this.searchText$.next(text);
+		const searchTextValue = event && (event as HTMLInputElement).value;
+		if(searchTextValue) {
+			this.storeService.dispatch(searchTextAction({ searchTextValue }))
 		}
 
 	}
 
 	onFilterChange(event: EventTarget | null) {
-		const value = event && (event as HTMLSelectElement).value;
-		if(value) {
-			this.filterState$.next(value)
+		const filterValue = event && (event as HTMLSelectElement).value;
+		if(filterValue) {
+			this.storeService.dispatch(changeFilterAction({ filterValue }))
 		}
 	}
 
@@ -106,3 +71,4 @@ export class WeatherTableComponent implements AfterViewInit{
 		return this.weatcherService.getHourlyWeatherData(cityName);
 	}
 }
+
