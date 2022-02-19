@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, ofType, createEffect } from '@ngrx/effects';
-import { catchError, debounceTime, distinctUntilChanged, filter, map, mergeMap, of } from "rxjs";
+import { catchError, debounceTime, distinctUntilChanged, map, mergeMap, of } from "rxjs";
 import { searchTextAction, searchTextInputAction } from "../actions/weather-forecast.actions";
 @Injectable()
 export class SearchTextInputEffect {
@@ -8,7 +8,6 @@ export class SearchTextInputEffect {
 		ofType(searchTextInputAction),
 		debounceTime(1000),
 		map(({ searchTextValue }) => searchTextValue.trim()),
-		filter(value => value.length > 2),
 		distinctUntilChanged(),
 		mergeMap(searchTextValue => {
 			return of(searchTextAction({ searchTextValue }))

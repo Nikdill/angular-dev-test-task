@@ -1,4 +1,5 @@
 import { WeaherDailyItemResponse, WeaherHourlyItemResponse } from "libs/weather-forecast/services/src/lib/actions/get-weather-data.response";
+import { WeatherForecastCollectionModel } from "libs/weather-forecast/services/src/lib/model/weather-forecast-collection.model";
 
 export const weatherForecastStoreKey = 'weatherForecast';
 
@@ -13,18 +14,13 @@ export enum WeatherMode {
 	hourly = 'hourly'
 }
 
-export interface WeatherRecordInterface {
-	cityName: string;
-	weatherItems: WeatherItemResponse[];
-}
-
 type WeatherModeType = keyof typeof WeatherMode;
 
 export interface StateInterface {
 	filter: WeatherMode;
 	searchText: string;
 	weatherItemsMap: {
-		[key in WeatherModeType]: WeatherRecordInterface[]
+		[key in WeatherModeType]: WeatherForecastCollectionModel[]
 	}
 }
 

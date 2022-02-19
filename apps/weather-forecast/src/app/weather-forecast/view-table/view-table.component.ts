@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core';
-import { WeatherRecordInterface } from '../store/state';
+import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef } from '@angular/core';
+import { WeatherForecastCollectionModel } from 'libs/weather-forecast/services/src/lib/model/weather-forecast-collection.model';
 
 @Component({
   selector: 'bp-view-table',
@@ -7,19 +7,11 @@ import { WeatherRecordInterface } from '../store/state';
   styleUrls: ['./view-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ViewTableComponent implements OnInit {
+export class ViewTableComponent   {
 
 	@Input()
-	weatherRecords!: WeatherRecordInterface[];
+	weatherRecords!: WeatherForecastCollectionModel[];
 
 	@ContentChild('headerTemplate')
 	headerTemplate!: TemplateRef<any>
-
-	@ContentChild('tdTemplate')
-	tdTemplate!: TemplateRef<any>
-
-	constructor() { }
-
-	ngOnInit(): void {}
-
 }

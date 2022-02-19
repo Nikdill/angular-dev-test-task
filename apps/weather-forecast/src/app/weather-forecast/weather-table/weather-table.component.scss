@@ -29,3 +29,22 @@ span {
 	padding: 5px;
 	box-sizing: border-box;
 }
+
+.weather-forecast-table {
+	margin-bottom: 25px;
+}
+
+.not-found-message {
+	max-width: 30%;
+	padding: 10px 20px;
+	border: 1px solid rgb(146, 47, 47);
+	background-color: rgb(241, 234, 234);
+	border-radius: 3px;
+	flex-grow: 1;
+	text-align: center;
+	&-wrap {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}

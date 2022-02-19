@@ -9,20 +9,24 @@ const _weatherForecastReducer = createReducer(
   	on(searchTextAction, (state, { searchTextValue }) => ({...state, searchText: searchTextValue })),
 	on(quaryParamsChangeAction, (state, { searchTextValue, filterValue }) => ({
 			...state,
-		 	searchText: (state.searchText || '').trim().toLocaleLowerCase() === (searchTextValue || '').trim().toLocaleLowerCase() ? state.searchText : searchTextValue,
+		 	searchText: searchTextValue,
 		  	filter: filterValue
 		})),
 	on(weatherItemsLoadedAction, (state, { weatherRecord }) => {
-		const newStateMap = new Map(state.weatherItemsMap[state.filter].map(i => [i.cityName, i.weatherItems]));
+		const newState = [...state.weatherItemsMap[state.filter]];
+		const foundIndex = newState.findIndex(i => i.cityName === weatherRecord.cityName);
 
-		newStateMap.set(weatherRecord.cityName, weatherRecord.weatherItems)
-
+		if(~foundIndex) {
+			newState.splice(foundIndex, 1, weatherRecord);
+		} else {
+			newState.push(weatherRecord)
+		}
 
 		return {
 			...state,
 			 weatherItemsMap: {
 				...state.weatherItemsMap,
-				[state.filter]: Array.from(newStateMap).map(([cityName, weatherItems]) => ({ cityName, weatherItems }))
+				[state.filter]: newState
 			}
 		}
 	}),

@@ -1,53 +1,49 @@
-<div class="wrap">
-	<label>
-		<span>Search</span>
-		<input (input)="onSearch($event.target)" [value]="searchTextState$ | async" type="text">
-	</label>
+<div class="weather-forecast-table">
+	<div class="wrap">
+		<label>
+			<span>Search</span>
+			<input (input)="onSearch($event.target)" [value]="searchTextState$ | async" type="text">
+		</label>
 
-	<label>
-		<span>Filter</span>
-		<select *ngIf="(filterState$ | async) as filterState" (change)="onFilterChange($event.target)">
-			<option value="daily" [selected]="filterState === 'daily'">daily</option>
-			<option value="hourly" [selected]="filterState === 'hourly'">hourly</option>
-		</select>
-	</label>
+		<label>
+			<span>Filter</span>
+			<select *ngIf="(filterState$ | async) as filterState" (change)="onFilterChange($event.target)">
+				<option value="daily" [selected]="filterState === 'daily'">daily</option>
+				<option value="hourly" [selected]="filterState === 'hourly'">hourly</option>
+			</select>
+		</label>
+	</div>
+
+	<bp-view-table [weatherRecords]="(weatherForecastItems$ | async) || []">
+		<ng-template  #headerTemplate>
+			<ng-container [ngSwitch]="filterState$ | async">
+				<ng-container *ngSwitchCase="'daily'">
+					<th>City Name</th>
+					<th>Mo</th>
+					<th>Tu</th>
+					<th>We</th>
+					<th>Th</th>
+					<th>Fr</th>
+					<th>Sa</th>
+					<th>Su</th>
+				</ng-container>
+
+				<ng-container *ngSwitchCase="'hourly'">
+					<th>City Name</th>
+					<th>03:00</th>
+					<th>06:00</th>
+					<th>09:00</th>
+					<th>12:00</th>
+					<th>15:00</th>
+					<th>18:00</th>
+					<th>21:00</th>
+					<th>24:00</th>
+				</ng-container>
+			</ng-container>
+		</ng-template>
+	</bp-view-table>
 </div>
 
-
-<ng-container *ngIf="(weatherForecastItems$ | async) || [] as weatherForecastItems" [ngSwitch]="filterState$ | async">
-	<bp-view-table *ngSwitchCase="'daily'" [weatherRecords]="weatherForecastItems">
-		<ng-template #headerTemplate>
-			<th>City Name</th>
-			<th>Mo</th>
-			<th>Tu</th>
-			<th>We</th>
-			<th>Th</th>
-			<th>Fr</th>
-			<th>Sa</th>
-			<th>Su</th>
-		</ng-template>
-
-		<ng-template #tdTemplate let-item>
-			{{item.temp.day}}
-		</ng-template>
-	</bp-view-table>
-
-	<bp-view-table *ngSwitchCase="'hourly'" [weatherRecords]="weatherForecastItems">
-		<ng-template #headerTemplate>
-			<th>City Name</th>
-			<th>03:00</th>
-			<th>06:00</th>
-			<th>09:00</th>
-			<th>12:00</th>
-			<th>15:00</th>
-			<th>18:00</th>
-			<th>21:00</th>
-			<th>24:00</th>
-		</ng-template>
-		<ng-template #tdTemplate let-item>
-			{{item.temp}}
-		</ng-template>
-	</bp-view-table>
-</ng-container>
-
-
+<div class="not-found-message-wrap" *ngIf="notFoundMessage$ | async">
+	<div class="not-found-message"> Not Found !</div>
+</div>

@@ -5,7 +5,10 @@ import {Observable, of} from "rxjs";
 
 import { WeatherForecastApiService } from "./weather-forecast-api.service";
 import { GetGeoDataItem } from "./actions/get-geo-data.response";
-import { WeaherDailyItemResponse, WeaherHourlyItemResponse } from "./actions/get-weather-data.response";
+import { WeatherForecastFactory } from "./model/weather-forecast-collection.factory";
+import { WeatherForecastByHourFactory } from "./model/hourly/weather-forecast-by-hour.factory";
+import { WeatherForecastCollectionModel } from "./model/weather-forecast-collection.model";
+import { WeatherForecastByDayFactory } from "./model/daily/weather-forecast-by-day.factory";
 
 
 @Injectable()
@@ -16,10 +19,10 @@ export class WeatherForecastService {
 		return this.weatherForecastApiService.getGeoData(cityName).pipe(catchError(() => of([])));
 	}
 
-	public getDailyWeatherData(cityName: string): Observable<{cityName: string; weatherItems: WeaherDailyItemResponse[]} | null> {
+	public getDailyWeatherData(cityName: string): Observable<WeatherForecastCollectionModel | null> {
 		return this.getGeoData(cityName).pipe(switchMap(citiesLocationData => {
 			const cityLocation = (citiesLocationData || []).pop();
-			let result$: Observable<{cityName: string; weatherItems: WeaherDailyItemResponse[]} | null> = of(null);
+			let result$: Observable<WeatherForecastCollectionModel | null> = of(null);
 
 			if(cityLocation) {
 				result$ = this.weatherForecastApiService.getWeatherData(
@@ -27,7 +30,14 @@ export class WeatherForecastService {
 					cityLocation.lon,
 					[ 'current','minutely','hourly','alerts' ]
 				).pipe(
-					map(response => ({cityName: cityLocation.name, weatherItems: (response?.daily || []).slice(0, 7)})),
+					map(response =>
+						new WeatherForecastFactory().getModelFromData({
+							cityName: cityLocation.name,
+							weatherForecastItems: (response?.daily || [])
+							.slice(0, 7)
+							.map(item => new WeatherForecastByDayFactory().getModelFromData(item))
+						})
+					),
 					catchError(() => of(null))
 				)
 			}
@@ -36,10 +46,10 @@ export class WeatherForecastService {
 		}))
 	}
 
-	public getHourlyWeatherData(cityName: string): Observable<{cityName: string; weatherItems: WeaherHourlyItemResponse[]} | null> {
+	public getHourlyWeatherData(cityName: string): Observable<WeatherForecastCollectionModel | null> {
 		return this.getGeoData(cityName).pipe(switchMap(citiesLocationData => {
 			const cityLocation = (citiesLocationData || []).pop();
-			let result$: Observable<{cityName: string; weatherItems: WeaherHourlyItemResponse[]} | null> = of(null);
+			let result$: Observable<WeatherForecastCollectionModel | null> = of(null);
 
 			if(cityLocation) {
 				result$ = this.weatherForecastApiService.getWeatherData(
@@ -47,7 +57,15 @@ export class WeatherForecastService {
 					cityLocation.lon,
 					[ 'current','minutely','daily','alerts' ]
 				).pipe(
-					map(response => ({cityName: cityLocation.name, weatherItems: (response?.hourly || []).filter((_, i) => (i + 1) % 3 === 0).slice(0, 8)})),
+					map(response =>
+						new WeatherForecastFactory().getModelFromData({
+							cityName: cityLocation.name,
+							weatherForecastItems: (response?.hourly || [])
+							.filter((_, i) => (i + 1) % 3 === 0)
+							.slice(0, 8)
+							.map(item => new WeatherForecastByHourFactory().getModelFromData(item))
+						})
+					),
 					catchError(() => of(null))
 				)
 			}

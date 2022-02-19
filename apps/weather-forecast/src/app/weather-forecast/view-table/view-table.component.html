@@ -7,8 +7,8 @@
 	<tbody>
 	<tr *ngFor="let weatherRecord of weatherRecords">
 		<td>{{weatherRecord.cityName}}</td>
-		<td *ngFor="let weatherItem of weatherRecord.weatherItems">
-			<ng-container *ngTemplateOutlet="tdTemplate; context: {$implicit: weatherItem}"></ng-container>
+		<td *ngFor="let weatherItem of weatherRecord.weatherForecastItems">
+			{{weatherItem.temperature}}
 		</td>
 	</tr>
 	</tbody>

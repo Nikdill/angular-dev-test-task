@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { changeFilterAction, searchTextInputAction } from '../store/actions/weather-forecast.actions';
-import { filterTypeChecker, WeatherRecordInterface } from '../store/state';
+import { Actions, ofType } from '@ngrx/effects';
+import { WeatherForecastCollectionModel } from 'libs/weather-forecast/services/src/lib/model/weather-forecast-collection.model';
+import { mapTo, merge, Observable } from 'rxjs';
+import { changeFilterAction, searchTextInputAction, weatherItemsLoadedAction, weatherItemsOnLoadErrorAction } from '../store/actions/weather-forecast.actions';
+import { filterTypeChecker } from '../store/state';
 import { StoreService } from '../store/store.service';
 
 @Component({
@@ -12,16 +14,25 @@ import { StoreService } from '../store/store.service';
 })
 export class WeatherTableComponent {
 
-	weatherForecastItems$: Observable<WeatherRecordInterface[]>;
+	weatherForecastItems$: Observable<WeatherForecastCollectionModel[]>;
 
 	searchTextState$: Observable<string>;
 
 	filterState$: Observable<string>;
 
-	constructor(private storeService: StoreService) {
+	notFoundMessage$: Observable<boolean>;
+
+	constructor(
+		private storeService: StoreService,
+		private readonly actions$: Actions,
+		) {
 		this.searchTextState$ = this.storeService.getSearchTextState();
 		this.filterState$ = this.storeService.getFilterState();
 		this.weatherForecastItems$ = this.storeService.getWeatherForecastItems();
+		this.notFoundMessage$ = merge(
+			this.actions$.pipe(ofType(weatherItemsLoadedAction),mapTo(false)),
+			this.actions$.pipe(ofType(weatherItemsOnLoadErrorAction),mapTo(true))
+		)
 	}
 
 	onSearch(event: EventTarget | null) {
