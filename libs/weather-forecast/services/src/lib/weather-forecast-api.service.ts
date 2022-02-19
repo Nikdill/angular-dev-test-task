@@ -15,7 +15,7 @@ export class WeatherForecastApiService {
 
 	public getGeoData(cityName: string, limit = 1): Observable<GetGeoDataResponse> {
 		return this.http.get<GetGeoDataResponse>(
-			`http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${this.apiKey}`
+			`https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=${limit}&appid=${this.apiKey}`
 		);
 	}
 

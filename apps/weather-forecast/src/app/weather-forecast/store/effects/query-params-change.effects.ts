@@ -8,15 +8,9 @@ import { StoreService } from "../store.service";
 @Injectable()
 export class QueryParamsChangeEffect {
 	queryParamsChange$ = createEffect(() => this.activatedRoute.queryParams.pipe(
-		filter(params => !!Object.keys(params || {}).length),
 		map(params => ({ filter: (params.filter || '').trim().toLocaleLowerCase(), search: (params.search || '').trim()})),
 		filter(params => filterTypeChecker(params.filter) && params.search),
 		distinctUntilChanged((prev, current) => prev.filter === current.filter && prev.search === current.search),
-		map(params => ({
-				search: (params.search || '').trim(),
-				filter: params.filter
-			})
-		),
 		mergeMap(params => of(quaryParamsChangeAction({ filterValue: params.filter, searchTextValue: params.search }))),
 		catchError(() => of(quaryParamsChangeAction({ filterValue: WeatherMode.daily, searchTextValue: '' })))
 	  ));
@@ -25,8 +19,8 @@ export class QueryParamsChangeEffect {
 		this.actions$.pipe(
 			ofType(changeFilterAction),
 			concatLatestFrom(_ => this.storeService.getSearchTextState()),
-			map(([action, searchText]) => ({
-					search: (searchText || '').trim(),
+			map(([action, search]) => ({
+					search,
 					filter: action.filterValue
 				})
 			)
@@ -34,9 +28,9 @@ export class QueryParamsChangeEffect {
 			this.actions$.pipe(
 				ofType(searchTextAction),
 				concatLatestFrom(_ => this.storeService.getFilterState()),
-				map(([action, filterState]) => ({
-						search: (action.searchTextValue || '').trim(),
-						filter: filterState
+				map(([action, filter]) => ({
+						search: action.searchTextValue,
+						filter
 					})
 				)
 				),

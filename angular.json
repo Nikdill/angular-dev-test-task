@@ -38,7 +38,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/apps/weather-forecast",
+            "outputPath": "docs",
             "index": "apps/weather-forecast/src/index.html",
             "main": "apps/weather-forecast/src/main.ts",
             "polyfills": "apps/weather-forecast/src/polyfills.ts",
