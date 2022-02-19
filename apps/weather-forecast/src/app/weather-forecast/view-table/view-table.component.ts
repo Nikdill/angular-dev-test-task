@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core';
+import { WeatherRecordInterface } from '../store/state';
 
 @Component({
   selector: 'bp-view-table',
   templateUrl: './view-table.component.html',
-  styleUrls: ['./view-table.component.scss']
+  styleUrls: ['./view-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewTableComponent implements OnInit {
 
-  constructor() { }
+	@Input()
+	weatherRecords!: WeatherRecordInterface[];
 
-  ngOnInit(): void {
-  }
+	@ContentChild('headerTemplate')
+	headerTemplate!: TemplateRef<any>
+
+	@ContentChild('tdTemplate')
+	tdTemplate!: TemplateRef<any>
+
+	constructor() { }
+
+	ngOnInit(): void {}
 
 }

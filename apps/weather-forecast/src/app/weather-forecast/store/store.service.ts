@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
-import { WeaherItemResponse } from "libs/weather-forecast/services/src/lib/actions/get-weather-data.response";
 import { distinctUntilChanged, map, Observable, publishReplay, refCount } from "rxjs";
-import { StateInterface, weatherForecastStoreKey } from "./state";
+import { StateInterface, weatherForecastStoreKey, WeatherRecordInterface } from "./state";
 
 @Injectable()
 export class StoreService {
@@ -38,9 +37,9 @@ export class StoreService {
 		)
 	}
 
-	getWeatherForecastItems(): Observable<WeaherItemResponse[]> {
+	getWeatherForecastItems(): Observable<WeatherRecordInterface[]> {
 		return this.store$.pipe(
-			map(state => state.weatherItems),
+			map(state => state.weatherItemsMap[state.filter]),
 			distinctUntilChanged(),
 			publishReplay(1),
 			refCount()

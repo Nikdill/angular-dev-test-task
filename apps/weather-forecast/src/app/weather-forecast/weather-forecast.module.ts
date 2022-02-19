@@ -9,7 +9,9 @@ import { StoreService } from './store/store.service';
 import { weatherForecastReducer } from './store/reducers/weather-forecast.reducer';
 import { weatherForecastStoreKey } from './store/state';
 import { EffectsModule } from '@ngrx/effects';
-import { WeatherForecastEffects } from './store/effects/weather-forecast.effects';
+import { LoadWeatherForecastEffect } from './store/effects/load-weather-forecast.effect';
+import { QueryParamsChangeEffect } from './store/effects/query-params-change.effects';
+import { SearchTextInputEffect } from './store/effects/search-text-input.effect';
 @NgModule({
 	declarations: [
 		WeatherTableComponent,
@@ -20,7 +22,7 @@ import { WeatherForecastEffects } from './store/effects/weather-forecast.effects
 		RouterModule.forRoot([]),
 		WeatherForecastServicesModule,
 		StoreModule.forFeature(weatherForecastStoreKey, weatherForecastReducer),
-		EffectsModule.forRoot([WeatherForecastEffects])
+		EffectsModule.forRoot([LoadWeatherForecastEffect, QueryParamsChangeEffect, SearchTextInputEffect])
 	],
 	providers: [StoreService],
 	exports: [WeatherTableComponent],

@@ -1,0 +1,31 @@
+.wrap {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+label {
+	display: flex;
+	padding: 10px;
+	align-items: center;
+	box-sizing: border-box;
+	&:first-child {
+		padding-left: 0;
+		flex-grow: 1;
+	}
+	&:last-child {
+		justify-content: end;
+		padding-right: 0;
+	}
+}
+
+input {
+	flex-grow: 1;
+	box-sizing: border-box;
+}
+
+span {
+	padding: 5px;
+	box-sizing: border-box;
+}
